@@ -3,7 +3,11 @@
 import requests, sys, os
 import urllib3
 import json
+import ssl 
+ssl._create_default_https_context = ssl._create_unverified_context
+
 urllib3.disable_warnings()
+
 from bs4 import BeautifulSoup
 
 class colors:
@@ -130,12 +134,14 @@ def checkdebug():
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'] # Use to trigger "Method not allowed on laravel"
 
     for method in methods:
-        response = requests.request(method, host)
-        if(response.status_code == 405):
-            if 'MethodNotAllowedHttpException' in response.text:
-                return True
-                break
-
+        try:
+            response = requests.request(method, host, verify=False)
+            if(response.status_code == 405):
+                if 'MethodNotAllowedHttpException' in response.text:
+                    return True
+                    break
+        except:
+            pass
 
 def check_requirements():
     fail = False
@@ -162,12 +168,12 @@ def check_ignition():
 
 def main():
     global host
+    host = sys.argv[1]
     banner()
     check_requirements()
+    print(f'{colors.OKGREEN} [Target]: {colors.HEADER} ' + host)
     if(len(sys.argv) > 1):
-        host = sys.argv[1]
         fp = fingerprint()
-
         ignition_vuln = check_ignition()
         if(ignition_vuln):
             print(f"{colors.FAIL} [VULN] Vulnerability detected: Remote Code Execution with CVE-2021-3129 \n")
