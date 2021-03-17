@@ -1,6 +1,6 @@
 # Todo
 
- - [ ] Laravel Finderprint
+ - [ ] Laravel Fingerprint
  - [ ] Laravel Leak .env
  - [ ] Laravel Debug Mode
  - [ ] Laravel CVE-2018-15133
