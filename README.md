@@ -1,10 +1,10 @@
 # Todo
 
- - [ ] Laravel Fingerprint
- - [ ] Laravel Leak .env
- - [ ] Laravel Debug Mode
+ - [x] Laravel Fingerprint
+ - [x] Laravel Leak .env
+ - [x] Laravel Debug Mode
  - [ ] Laravel CVE-2018-15133
- - [ ] Laravel Ignition
+ - [x] Laravel Ignition
  - [ ] Insecure Deserialization with APP_KEY leaked
 
 
