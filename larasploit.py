@@ -168,11 +168,13 @@ def check_ignition():
 
 def main():
     global host
-    host = sys.argv[1]
+   
     banner()
     check_requirements()
-    print(f'{colors.OKGREEN} [Target]: {colors.HEADER} ' + host)
+    
     if(len(sys.argv) > 1):
+        host = sys.argv[1]
+        print(f'{colors.OKGREEN} [Target]: {colors.HEADER} ' + host)
         fp = fingerprint()
         ignition_vuln = check_ignition()
         if(ignition_vuln):
@@ -188,8 +190,11 @@ def main():
                 print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running in Debug Mode (got via HTTP Method not allowed)')
 
     else:
-        print(f"{colors.WARNING}[!] USE: {sys.argv[0]} https://target.com\r\n")
+        print(f"{colors.WARNING}[😈] USE: python3 {sys.argv[0]} https://target.com\r\n")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\r\n{colors.WARNING}[😈] (CTRL + C) Exiting...\r\n")
