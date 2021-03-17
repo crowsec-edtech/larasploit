@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import requests, sys
+import requests, sys, os
 import urllib3
 urllib3.disable_warnings()
 from bs4 import BeautifulSoup
@@ -37,7 +37,7 @@ def fingerprint(host):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'}
     proxy = {}
 
-    response = requests.get(host, headers=headers, proxies=proxy, verify=False, allow_redirects=True)
+    response = requests.get(host, headers=headers, verify=False, allow_redirects=True)
     print(f'{colors.HEADER}')
     print(f"{colors.OKGREEN} [~] Application Fingerprint {colors.HEADER}\r\n")
 
@@ -63,9 +63,13 @@ def fingerprint(host):
                 print(f'{colors.OKGREEN} [Common Laravel Cookie]: {colors.HEADER} {cookie}: {response.cookies[cookie][:20]}...')
     
     if('_ignition\/' in response.text):
+            fingerprint_data.append({'laravel_default': True})
+            fingerprint_data.append({'laravel_ignition': True})
+
             print(f'{colors.WARNING} [Info]: {colors.HEADER} Laravel 8 detected (with ignition)!')
     
     if('Laravel v8' in response.text):
+            fingerprint_data.append({'laravel_default': True})
             print(f'{colors.WARNING} [Info]: {colors.HEADER} Laravel 8 detected!')
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -76,6 +80,7 @@ def fingerprint(host):
     if(laravel_version):
         print(f'{colors.WARNING} [Info]: {colors.HEADER} Default laravel instalation detected!')
         print(f'{colors.WARNING} [Version]: {colors.HEADER} {laravel_version}')
+        fingerprint_data.append({'laravel_version': laravel_version}    )
 
     laravel_default = ""
     for searchWrapper in soup.find_all('div', {'class':'title m-b-md'}):
@@ -89,14 +94,15 @@ def fingerprint(host):
             laravel_default = True
 
     if(laravel_default):
+        fingerprint_data.append({'laravel_default': True})
         print(f'{colors.WARNING} [Info]: {colors.HEADER} Default laravel instalation detected!')
         print(f'{colors.WARNING} [Version]: {colors.HEADER} Laravel < 7')
 
    
-    env_testing = requests.get(host + "/.env", headers=headers, proxies=proxy, verify=False)
+    env_testing = requests.get(host + "/.env", headers=headers, verify=False)
     if(env_testing.status_code == 200):
         if('APP_ENV' in env_testing.text):
-            print(f"{colors.FAIL} [!] Vulnerability detected: .env exposed\n")
+            print(f"{colors.FAIL} [!] Vulnerability detected: .env file exposed\n")
 
             for env_line in env_testing.text.split('\n'):
                 if('APP_ENV' in env_line):
@@ -113,8 +119,18 @@ def fingerprint(host):
                         print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running without Debug Mode')
 
     return fingerprint_data
+
+def check_requirements():
+    fail = False
+    if(os.path.isfile('./phpggc/phpggc') == False):
+        print(f'{colors.FAIL} [ERR]: {colors.HEADER} Missing phpggc, READ THE FUCKING README!')
+        fail = True
+
+    if(fail):
+        exit()
 def main():
     banner()
+    check_requirements()
     if(len(sys.argv) > 1):
         fp = fingerprint(sys.argv[1])
         #print(fp)

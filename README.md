@@ -10,17 +10,19 @@
 
 # Install
 
-- Clone repo
+- Clone repo and dependency
 
 ```
 git clone https://github.com/carlosevieira/larasploit
+cd larasploit 
+pip3 install -r requirements.txt
+git clone https://github.com/ambionics/phpggc
 
 ```
 - Run
 
 ```
-cd larasploit 
-python3 larasploit.py 
+python3 larasploit.py https://target.com
 
 ```
 
