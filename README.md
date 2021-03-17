@@ -1,4 +1,4 @@
-Todo
+!Todo
 
  - Laravel Finderprint
  - Laravel Leak .env
@@ -8,8 +8,20 @@ Todo
  - Insecure Desserialization with APP_KEY leaked
 
 
-- install
+!install
+
+- Clone repo
 
 ```
-git clone 
+git clone https://github.com/carlosevieira/larasploit
+
 ```
+- Run
+
+```
+cd larasploit 
+python3 larasploit.py 
+
+```
+
+
