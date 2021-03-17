@@ -16,7 +16,6 @@
 git clone https://github.com/carlosevieira/larasploit
 cd larasploit 
 pip3 install -r requirements.txt
-git clone https://github.com/ambionics/phpggc
 
 ```
 - Run
