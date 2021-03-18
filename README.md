@@ -6,6 +6,7 @@
  - [ ] Laravel CVE-2018-15133
  - [x] Laravel Ignition
  - [ ] Insecure Deserialization with APP_KEY leaked
+ - [x] Interactive mode
 
 
 # Install
