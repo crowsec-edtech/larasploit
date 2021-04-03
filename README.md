@@ -4,7 +4,7 @@
  - [x] Laravel Leak .env
  - [x] Laravel Debug Mode
  - [ ] Laravel CVE-2018-15133
- - [x] Laravel Ignition
+ - [x] Laravel Ignition CVE-2021-3129
  - [ ] Insecure Deserialization with APP_KEY leaked
  - [x] Interactive mode
 
