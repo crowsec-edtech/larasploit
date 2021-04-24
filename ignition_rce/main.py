@@ -5,12 +5,13 @@
 # Author: cfreal
 # Date: 2021-01-13
 #
+
 import base64
 import re
 import sys
-from dataclasses import dataclass
-
 import requests
+
+from dataclasses import dataclass
 
 class colors:
     HEADER = '\033[95m'
@@ -22,6 +23,7 @@ class colors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
 
 @dataclass
 class Exploit:
